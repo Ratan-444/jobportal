@@ -3,14 +3,16 @@ import mongoose from "mongoose";
 let isConnected = false;
 
 const connectDB = async () => {
-  if (isConnected) return;
-
+  if (isConnected) {
+    return;
+  }
   try {
-    await mongoose.connect(process.env.MONGO_URI); // ✅ Updated: removed deprecated options
-    isConnected = true;
-    console.log("✅ MongoDB connected successfully");
+    const db = await mongoose.connect(process.env.MONGO_URI);
+    isConnected = db.connections[0].readyState;
+    console.log("✅ MongoDB connected");
   } catch (err) {
-    console.error("❌ MongoDB Connection Error:", err.message);
+    console.error("❌ MongoDB connection error:", err);
+    throw err;
   }
 };
 
